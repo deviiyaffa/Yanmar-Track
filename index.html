@@ -82,6 +82,7 @@ header{position:relative;z-index:2;background:#111;border-bottom:2px solid var(-
 .time-progress-fill.warning{background:linear-gradient(90deg,#7a3f00,var(--orange));}
 .time-progress-fill.late{background:linear-gradient(90deg,#6f000d,var(--red));}
 .time-progress-meta{display:flex;justify-content:space-between;gap:12px;margin-top:6px;font-size:0.58rem;color:var(--text-dim);letter-spacing:1px;font-family:'Orbitron',sans-serif;}
+.readonly-hidden{display:none !important;}
 .input-section{position:relative;z-index:1;padding:8px 16px calc(18px + var(--safe-bottom));border-top:1px solid #1a1a1a;margin-top:auto;background:#0f0f0f;}
 .input-label{font-size:0.62rem;letter-spacing:3px;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px;display:block;}
 .input-row{display:flex;gap:8px;}
@@ -137,7 +138,7 @@ body{padding-top:max(0px,var(--safe-top));}
   import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
 
   const firebaseConfig = {
-    apiKey: "AIzaSyBWYmSHjwQ7tx3l_soDxgBKmfj9HCKwy-s",
+    apiKey: "AIzaSyCbztV33Q6q0PDkedZUYf6ZP2eQ65t4uBI",
     authDomain: "yantrack-36bd6.firebaseapp.com",
     databaseURL: "https://yantrack-36bd6-default-rtdb.europe-west1.firebasedatabase.app",
     projectId: "yantrack-36bd6",
@@ -147,35 +148,35 @@ body{padding-top:max(0px,var(--safe-top));}
     measurementId: "G-NYKFQWGS0W"
   };
 
-  const app = initializeApp(firebaseConfig);
-  const db = getDatabase(app);
+  window._firebaseReady = false;
 
-  // Expose Firebase functions to global scope
-  window._fbDb = db;
-  window._fbRef = ref;
-  window._fbSet = set;
-  window._fbOnValue = onValue;
-  window._firebaseReady = true;
+  if (firebaseConfig.apiKey && firebaseConfig.databaseURL && firebaseConfig.projectId) {
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
 
-  // Listen for real-time updates from manager
-  const today = new Date().toDateString();
-  const dayRef = ref(db, 'yantrack/' + today);
-  onValue(dayRef, (snapshot) => {
-    // Only update if data comes from elsewhere (not our own save)
-    // We use a flag to avoid loops
-    if (window._ignoreRemote) return;
-    const data = snapshot.val();
-    if (data && data.machines && typeof window.machines !== 'undefined') {
-      // Only sync if manager pushed a reset or update
-      if (data._source === 'manager') {
+    // Expose Firebase functions to global scope
+    window._fbDb = db;
+    window._fbRef = ref;
+    window._fbSet = set;
+    window._fbOnValue = onValue;
+    window._firebaseReady = true;
+
+    const today = new Date().toDateString();
+    const dayRef = ref(db, 'yantrack/' + today);
+    onValue(dayRef, (snapshot) => {
+      if (window._ignoreRemote) return;
+      const data = snapshot.val();
+      if (data && Array.isArray(data.machines) && typeof window.machines !== 'undefined') {
         window.machines = data.machines || [];
         window.historique = data.historique || [];
         window.updateUI && window.updateUI();
       }
-    }
-  });
+    });
 
-  console.log('Firebase connecté ✓');
+    console.log('Firebase connecté ✓');
+  } else {
+    console.log('Firebase desactive: configuration vide');
+  }
 </script>
 
 </head>
@@ -311,6 +312,8 @@ var arretStart = null;
 var arretTimer = null;
 var arretSecondes = 0;
 var historique = [];
+var appMode = (window.APP_MODE || 'lecture').toLowerCase();
+var isOperatorMode = appMode === 'operateur';
 
 // Ticks 0..23 positionnés précisément
 (function() {
@@ -370,6 +373,25 @@ function formatDuree(s) {
   var sec = s % 60;
   if (h > 0) return pad(h) + ':' + pad(m) + ':' + pad(sec);
   return pad(m) + ':' + pad(sec);
+}
+
+function applyAppMode() {
+  if (isOperatorMode) return;
+
+  var hiddenIds = ['resetBtn', 'gyroBtn', 'stopResumeBtn', 'addBtn', 'historyBtn', 'modalDelBtn'];
+  for (var i = 0; i < hiddenIds.length; i++) {
+    var element = document.getElementById(hiddenIds[i]);
+    if (element) element.classList.add('readonly-hidden');
+  }
+
+  var inputSection = document.querySelector('.input-section');
+  if (inputSection) inputSection.classList.add('readonly-hidden');
+
+  var noteArea = document.getElementById('noteArea');
+  if (noteArea) {
+    noteArea.setAttribute('readonly', 'readonly');
+    noteArea.setAttribute('disabled', 'disabled');
+  }
 }
 
 function updateDate() {
@@ -508,6 +530,7 @@ function renderBelt() {
 }
 
 function addMachine() {
+  if (!isOperatorMode) return;
   var input = document.getElementById('versionInput');
   var raw = input.value.trim().toUpperCase();
   raw = raw.replace(/\\s+/g, '');
@@ -542,6 +565,7 @@ function openModal(id) {
 }
 
 function saveNote() {
+  if (!isOperatorMode) return;
   if (selectedId === null) return;
   for (var i = 0; i < machines.length; i++) {
     if (machines[i].id === selectedId) {
@@ -559,6 +583,7 @@ function closeModalDirect() {
 }
 
 function deleteMachine() {
+  if (!isOperatorMode) return;
   if (selectedId === null) return;
   var newMachines = [];
   for (var i = 0; i < machines.length; i++) {
@@ -572,6 +597,7 @@ function deleteMachine() {
 }
 
 function toggleArret() {
+  if (!isOperatorMode) return;
   if (!arretActif) {
     arretActif = true;
     arretStart = new Date();
@@ -591,6 +617,7 @@ function toggleArret() {
 }
 
 function stopArret() {
+  if (!isOperatorMode) return;
   if (!arretActif) return;
   arretActif = false;
   clearInterval(arretTimer);
@@ -631,6 +658,7 @@ function closeHistory() {
 }
 
 function resetAll() {
+  if (!isOperatorMode) return;
   if (!confirm('Reinitialiser la journee ? Tout sera efface.')) return;
   if (arretActif) {
     arretActif = false;
@@ -662,6 +690,7 @@ function showToast(msg, isError) {
 }
 
 function save() {
+  if (!isOperatorMode) return;
   var today = new Date().toDateString();
   localStorage.setItem('yt_date', today);
   localStorage.setItem('yt_machines', JSON.stringify(machines));
@@ -672,7 +701,7 @@ function save() {
 
 // Firebase sync
 function saveToFirebase() {
-  if (!window._firebaseReady) return;
+  if (!isOperatorMode || !window._firebaseReady) return;
   try {
     var today = new Date().toDateString();
     var dayRef = window._fbRef(window._fbDb, 'yantrack/' + today);
@@ -713,6 +742,7 @@ document.getElementById('historyBtn').addEventListener('click', openHistory);
 document.getElementById('historyCloseBtn').addEventListener('click', closeHistory);
 document.getElementById('historyOverlay').addEventListener('click', function(e) { if (e.target === this) closeHistory(); });
 
+applyAppMode();
 updateDate();
 setInterval(updateDate, 60000);
 load();
