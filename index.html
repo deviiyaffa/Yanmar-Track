@@ -130,6 +130,54 @@ body{padding-top:max(0px,var(--safe-top));}
 }
 </style>
 
+
+<!-- Firebase -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+  import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBWYmSHjwQ7tx3l_soDxgBKmfj9HCKwy-s",
+    authDomain: "yantrack-36bd6.firebaseapp.com",
+    databaseURL: "https://yantrack-36bd6-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "yantrack-36bd6",
+    storageBucket: "yantrack-36bd6.firebasestorage.app",
+    messagingSenderId: "465999583533",
+    appId: "1:465999583533:web:f25d3eed390428de741ba4",
+    measurementId: "G-NYKFQWGS0W"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+
+  // Expose Firebase functions to global scope
+  window._fbDb = db;
+  window._fbRef = ref;
+  window._fbSet = set;
+  window._fbOnValue = onValue;
+  window._firebaseReady = true;
+
+  // Listen for real-time updates from manager
+  const today = new Date().toDateString();
+  const dayRef = ref(db, 'yantrack/' + today);
+  onValue(dayRef, (snapshot) => {
+    // Only update if data comes from elsewhere (not our own save)
+    // We use a flag to avoid loops
+    if (window._ignoreRemote) return;
+    const data = snapshot.val();
+    if (data && data.machines && typeof window.machines !== 'undefined') {
+      // Only sync if manager pushed a reset or update
+      if (data._source === 'manager') {
+        window.machines = data.machines || [];
+        window.historique = data.historique || [];
+        window.updateUI && window.updateUI();
+      }
+    }
+  });
+
+  console.log('Firebase connecté ✓');
+</script>
+
 </head>
 <body>
 
@@ -404,13 +452,13 @@ function updateTimeProgress() {
   elapsedLabel.textContent = formatMinutesLabel(productiveMinutes) + ' productives';
   if (deltaMachines >= 0) {
     fill.classList.add('on-track');
-    targetLabel.textContent = 'Cadence OK • objectif: ' + expectedMachines + '/' + GOAL;
+    targetLabel.textContent = 'Cadence OK — objectif: ' + expectedMachines + '/' + GOAL;
   } else if (deltaMachines === -1) {
     fill.classList.add('warning');
-    targetLabel.textContent = 'Leger retard • objectif: ' + expectedMachines + '/' + GOAL;
+    targetLabel.textContent = 'Leger retard — objectif: ' + expectedMachines + '/' + GOAL;
   } else {
     fill.classList.add('late');
-    targetLabel.textContent = 'Retard • objectif: ' + expectedMachines + '/' + GOAL;
+    targetLabel.textContent = 'Retard — objectif: ' + expectedMachines + '/' + GOAL;
   }
 }
 
@@ -462,7 +510,7 @@ function renderBelt() {
 function addMachine() {
   var input = document.getElementById('versionInput');
   var raw = input.value.trim().toUpperCase();
-  raw = raw.replace(/\s+/g, '');
+  raw = raw.replace(/\\s+/g, '');
   if (!raw) { showToast('Saisis une version !', true); return; }
   if (raw.indexOf('VIO') !== 0 && raw.indexOf('SV') !== 0) {
     showToast('Commence par VIO ou SV !', true); return;
@@ -618,7 +666,28 @@ function save() {
   localStorage.setItem('yt_date', today);
   localStorage.setItem('yt_machines', JSON.stringify(machines));
   localStorage.setItem('yt_historique', JSON.stringify(historique));
+  saveToFirebase();
 }
+
+
+// Firebase sync
+function saveToFirebase() {
+  if (!window._firebaseReady) return;
+  try {
+    var today = new Date().toDateString();
+    var dayRef = window._fbRef(window._fbDb, 'yantrack/' + today);
+    window._ignoreRemote = true;
+    window._fbSet(dayRef, {
+      machines: machines,
+      historique: historique,
+      count: machines.length,
+      lastUpdate: Date.now(),
+      _source: 'operateur'
+    });
+    setTimeout(function() { window._ignoreRemote = false; }, 1000);
+  } catch(e) { console.log('Firebase save error:', e); }
+}
+
 
 function load() {
   var savedDate = localStorage.getItem('yt_date');
