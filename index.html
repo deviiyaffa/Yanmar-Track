@@ -22,13 +22,16 @@ body{background:#0f0f0f !important;color:#f0f0f0 !important;font-family:'Rajdhan
 body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(232,0,28,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(232,0,28,0.025) 1px,transparent 1px);background-size:44px 44px;pointer-events:none;z-index:0;}
 body.arret-actif{animation:bgFlash 1.2s infinite;}
 @keyframes bgFlash{0%,100%{background-color:#0f0f0f;}50%{background-color:#1a0a00;}}
-.gyro-banner{display:none;position:relative;z-index:10;background:#1a0500;border-bottom:2px solid var(--orange);padding:10px 16px;align-items:center;justify-content:space-between;gap:10px;box-shadow:0 4px 30px var(--orange-glow);}
+.gyro-banner{display:none;position:relative;z-index:10;background:#1a0500;border-bottom:2px solid var(--orange);padding:10px 12px;align-items:center;gap:10px;box-shadow:0 4px 30px var(--orange-glow);grid-template-columns:minmax(0,1fr) auto auto;}
 .gyro-banner.show{display:flex;}
 .gyro-icon{font-size:1.6rem;animation:gyroPulse 0.6s infinite;}
 @keyframes gyroPulse{0%,100%{opacity:1;filter:drop-shadow(0 0 8px orange);}50%{opacity:0.15;filter:none;}}
-.gyro-label{font-family:'Orbitron',sans-serif;font-size:0.68rem;color:var(--orange);letter-spacing:2px;}
-.gyro-chrono{font-family:'Orbitron',sans-serif;font-size:1.5rem;font-weight:900;color:var(--orange);text-shadow:0 0 20px var(--orange-glow);letter-spacing:3px;min-width:80px;text-align:center;}
-.stop-resume-btn{background:var(--orange);border:none;border-radius:8px;padding:9px 14px;color:#000;font-family:'Orbitron',sans-serif;font-size:0.68rem;font-weight:900;cursor:pointer;letter-spacing:1px;white-space:nowrap;}
+.gyro-banner.show{display:grid;}
+.gyro-status{display:flex;align-items:center;gap:8px;min-width:0;}
+.gyro-label{font-family:'Orbitron',sans-serif;font-size:0.6rem;color:var(--orange);letter-spacing:1.5px;line-height:1.15;word-break:break-word;}
+.gyro-chrono{font-family:'Orbitron',sans-serif;font-size:1.2rem;font-weight:900;color:var(--orange);text-shadow:0 0 20px var(--orange-glow);letter-spacing:2px;min-width:64px;text-align:center;}
+.stop-resume-btn{background:var(--orange);border:none;border-radius:8px;padding:8px 10px;color:#000;font-family:'Orbitron',sans-serif;font-size:0.58rem;font-weight:900;cursor:pointer;letter-spacing:0.8px;white-space:nowrap;}
+.stop-resume-btn.scheduled-hidden{display:none;}
 .goal-banner{display:none;position:relative;z-index:3;background:linear-gradient(90deg,#001a0a,#003315,#001a0a);border-bottom:1px solid var(--green);text-align:center;padding:8px;font-family:'Orbitron',sans-serif;font-size:0.7rem;color:var(--green);letter-spacing:3px;}
 .goal-banner.show{display:block;}
 header{position:relative;z-index:2;background:#111;border-bottom:2px solid var(--red);padding:10px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px;box-shadow:0 4px 30px rgba(232,0,28,0.2);}
@@ -84,15 +87,15 @@ header{position:relative;z-index:2;background:#111;border-bottom:2px solid var(-
 .time-progress-fill.late{background:linear-gradient(90deg,#6f000d,var(--red));}
 .time-progress-meta{display:flex;justify-content:space-between;gap:12px;margin-top:6px;font-size:0.58rem;color:var(--text-dim);letter-spacing:1px;font-family:'Orbitron',sans-serif;}
 .readonly-hidden{display:none !important;}
-.input-section{position:relative;z-index:1;padding:8px 16px calc(18px + var(--safe-bottom));border-top:1px solid #1a1a1a;margin-top:auto;background:#0f0f0f;}
+.input-section{position:relative;z-index:1;padding:10px 16px calc(18px + var(--safe-bottom));border-top:1px solid rgba(255,255,255,0.06);margin-top:auto;background:linear-gradient(180deg,rgba(18,18,18,0.78),rgba(10,10,10,0.9));backdrop-filter:blur(18px) saturate(135%);-webkit-backdrop-filter:blur(18px) saturate(135%);box-shadow:0 -10px 28px rgba(0,0,0,0.28),inset 0 1px 0 rgba(255,255,255,0.04);}
 .input-label{font-size:0.62rem;letter-spacing:3px;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px;display:block;}
 .input-row{display:flex;gap:8px;}
-.version-input{flex:1;background:#1a1a1a;border:1px solid #2a2a2a;border-radius:8px;padding:13px 14px;color:var(--text);font-family:'Orbitron',sans-serif;font-size:0.95rem;font-weight:700;letter-spacing:2px;outline:none;transition:all 0.2s;text-transform:uppercase;}
+.version-input{flex:1;background:linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.025));border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:13px 14px;color:var(--text);font-family:'Orbitron',sans-serif;font-size:0.95rem;font-weight:700;letter-spacing:2px;outline:none;transition:all 0.2s;text-transform:uppercase;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);box-shadow:inset 0 1px 0 rgba(255,255,255,0.08),0 8px 24px rgba(0,0,0,0.18);}
 .version-input::placeholder{color:#333;font-size:0.72rem;letter-spacing:1px;}
-.version-input:focus{border-color:var(--red);box-shadow:0 0 0 3px var(--red-glow);background:#1f0d0d;}
-.add-btn{background:var(--red);border:none;border-radius:8px;padding:13px 16px;color:white;font-family:'Orbitron',sans-serif;font-size:0.85rem;font-weight:700;cursor:pointer;box-shadow:0 4px 20px var(--red-glow);letter-spacing:1px;white-space:nowrap;}
+.version-input:focus{border-color:rgba(232,0,28,0.75);box-shadow:0 0 0 3px rgba(232,0,28,0.18),0 10px 28px rgba(0,0,0,0.2);background:linear-gradient(180deg,rgba(80,14,20,0.22),rgba(255,255,255,0.03));}
+.add-btn{background:linear-gradient(180deg,rgba(255,28,60,0.95),rgba(232,0,28,0.82));border:1px solid rgba(255,255,255,0.12);border-radius:14px;padding:13px 15px;color:white;font-family:'Orbitron',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;box-shadow:0 8px 24px rgba(232,0,28,0.28),inset 0 1px 0 rgba(255,255,255,0.12);letter-spacing:0;white-space:nowrap;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);display:flex;align-items:center;justify-content:center;min-width:74px;}
 .add-btn:active{transform:scale(0.96);}
-.history-btn{background:#1a1a1a;border:1px solid #333;border-radius:8px;padding:13px 12px;color:var(--orange);font-size:1rem;cursor:pointer;flex-shrink:0;}
+.history-btn{background:linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.025));border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:13px 12px;color:var(--text);font-size:0.95rem;cursor:pointer;flex-shrink:0;box-shadow:inset 0 1px 0 rgba(255,255,255,0.08),0 8px 24px rgba(0,0,0,0.14);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);display:flex;align-items:center;justify-content:center;min-width:52px;}
 .hint{margin-top:6px;font-size:0.65rem;color:#444;letter-spacing:1px;}
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.82);backdrop-filter:blur(8px);z-index:100;display:flex;align-items:center;justify-content:center;padding:20px;}
 .modal-overlay.hidden{display:none;}
@@ -170,6 +173,9 @@ body{padding-top:max(0px,var(--safe-top));}
       if (data && Array.isArray(data.machines) && typeof window.machines !== 'undefined') {
         window.machines = data.machines || [];
         window.historique = data.historique || [];
+        window.arretActif = !!data.arretActif;
+        window.arretStart = data.arretStart ? new Date(data.arretStart) : null;
+        window.applyArretState && window.applyArretState();
         window.updateUI && window.updateUI();
       }
     });
@@ -184,9 +190,9 @@ body{padding-top:max(0px,var(--safe-top));}
 <body>
 
 <div class="gyro-banner" id="gyroBanner">
-  <div style="display:flex;align-items:center;gap:10px;">
+  <div class="gyro-status">
     <div class="gyro-icon">&#x1F6A8;</div>
-    <div class="gyro-label">CONVOYEUR ARRETE</div>
+    <div class="gyro-label" id="gyroLabel">CONVOYEUR ARRETE</div>
   </div>
   <div class="gyro-chrono" id="gyroChrono">00:00</div>
   <button class="stop-resume-btn" id="stopResumeBtn">REPRENDRE</button>
@@ -257,8 +263,8 @@ body{padding-top:max(0px,var(--safe-top));}
   <label class="input-label">Version de la machine</label>
   <div class="input-row">
     <input type="text" class="version-input" id="versionInput" placeholder="VIO2024 ou SV301" maxlength="30" autocomplete="off" spellcheck="false"/>
-    <button class="add-btn" id="addBtn">+ OK</button>
-    <button class="history-btn" id="historyBtn">&#x1F4CB;</button>
+    <button class="add-btn" id="addBtn" aria-label="Envoyer">&#10148;</button>
+    <button class="history-btn" id="historyBtn" aria-label="Historique">&#9776;</button>
   </div>
   <div class="hint">Commence par VIO ou SV</div>
 </div>
@@ -299,13 +305,13 @@ body{padding-top:max(0px,var(--safe-top));}
 
 <script>
 var GOAL = 23;
-var WORK_MINUTES = 460;
+var WORK_MINUTES = 445;
 var SHIFT_START_HOUR = 7;
 var SHIFT_END_HOUR = 15;
-var BREAK_START_HOUR = 12;
-var BREAK_START_MINUTE = 0;
-var BREAK_END_HOUR = 12;
-var BREAK_END_MINUTE = 20;
+var BREAK_SCHEDULE = [
+  { startHour: 9, startMinute: 30, endHour: 9, endMinute: 45, label: 'PAUSE CIGARETTE' },
+  { startHour: 12, startMinute: 0, endHour: 12, endMinute: 20, label: 'PAUSE MIDI' }
+];
 var machines = [];
 var selectedId = null;
 var arretActif = false;
@@ -376,6 +382,103 @@ function formatDuree(s) {
   return pad(m) + ':' + pad(sec);
 }
 
+function syncArretSecondesFromStart() {
+  if (arretActif && arretStart) {
+    arretSecondes = Math.max(Math.floor((Date.now() - arretStart.getTime()) / 1000), 0);
+  } else {
+    arretSecondes = 0;
+  }
+}
+
+function updateArretDisplay() {
+  syncArretSecondesFromStart();
+  document.getElementById('gyroChrono').textContent = formatDuree(arretSecondes);
+}
+
+function getBreakWindows(baseDate) {
+  var windows = [];
+  for (var i = 0; i < BREAK_SCHEDULE.length; i++) {
+    var item = BREAK_SCHEDULE[i];
+    windows.push({
+      label: item.label,
+      start: atTime(baseDate, item.startHour, item.startMinute),
+      end: atTime(baseDate, item.endHour, item.endMinute)
+    });
+  }
+  return windows;
+}
+
+function getActiveScheduledBreak(date) {
+  if (!isWorkingDay(date)) return null;
+  var windows = getBreakWindows(date);
+  for (var i = 0; i < windows.length; i++) {
+    if (date >= windows[i].start && date < windows[i].end) {
+      return windows[i];
+    }
+  }
+  return null;
+}
+
+function getScheduledBreakElapsedSeconds(date) {
+  var total = 0;
+  var windows = getBreakWindows(date);
+  for (var i = 0; i < windows.length; i++) {
+    total += overlapSeconds(atTime(date, SHIFT_START_HOUR, 0), date, windows[i].start, windows[i].end);
+  }
+  return total;
+}
+
+function startArretTimerLoop() {
+  clearInterval(arretTimer);
+  arretTimer = setInterval(function() {
+    updateArretDisplay();
+  }, 1000);
+}
+
+function applyArretState() {
+  var now = new Date();
+  var scheduledBreak = getActiveScheduledBreak(now);
+  var isScheduledStop = !arretActif && !!scheduledBreak;
+  var label = document.getElementById('gyroLabel');
+  var resumeButton = document.getElementById('stopResumeBtn');
+
+  if (arretActif && arretStart) {
+    document.getElementById('gyroBanner').classList.add('show');
+    document.getElementById('gyroBtn').classList.add('active');
+    document.getElementById('convoyeurStopOverlay').classList.add('show');
+    document.body.classList.add('arret-actif');
+    label.textContent = 'CONVOYEUR ARRETE';
+    resumeButton.classList.remove('scheduled-hidden');
+    updateArretDisplay();
+    startArretTimerLoop();
+  } else if (isScheduledStop) {
+    clearInterval(arretTimer);
+    arretTimer = setInterval(function() {
+      applyArretState();
+    }, 1000);
+    document.getElementById('gyroBanner').classList.add('show');
+    document.getElementById('gyroBtn').classList.add('active');
+    document.getElementById('convoyeurStopOverlay').classList.add('show');
+    document.body.classList.add('arret-actif');
+    label.textContent = scheduledBreak.label;
+    resumeButton.classList.add('scheduled-hidden');
+    document.getElementById('gyroChrono').textContent = formatDuree(
+      Math.max(Math.floor((scheduledBreak.end.getTime() - now.getTime()) / 1000), 0)
+    );
+  } else {
+    clearInterval(arretTimer);
+    arretTimer = null;
+    arretSecondes = 0;
+    document.getElementById('gyroBanner').classList.remove('show');
+    document.getElementById('gyroBtn').classList.remove('active');
+    document.getElementById('convoyeurStopOverlay').classList.remove('show');
+    document.body.classList.remove('arret-actif');
+    label.textContent = 'CONVOYEUR ARRETE';
+    resumeButton.classList.remove('scheduled-hidden');
+    document.getElementById('gyroChrono').textContent = '00:00';
+  }
+}
+
 function applyAppMode() {
   if (isOperatorMode) return;
 
@@ -436,7 +539,10 @@ function overlapSeconds(startA, endA, startB, endB) {
 function getRecordedArretSeconds() {
   var total = 0;
   for (var i = 0; i < historique.length; i++) total += historique[i].duree_s || 0;
-  if (arretActif && arretStart) total += arretSecondes;
+  if (arretActif && arretStart) {
+    syncArretSecondesFromStart();
+    total += arretSecondes;
+  }
   return total;
 }
 
@@ -458,11 +564,8 @@ function updateTimeProgress() {
 
   var shiftStart = atTime(now, SHIFT_START_HOUR, 0);
   var shiftEnd = atTime(now, SHIFT_END_HOUR, 0);
-  var breakStart = atTime(now, BREAK_START_HOUR, BREAK_START_MINUTE);
-  var breakEnd = atTime(now, BREAK_END_HOUR, BREAK_END_MINUTE);
-
   var rawElapsedSeconds = overlapSeconds(shiftStart, now, shiftStart, shiftEnd);
-  var breakElapsedSeconds = overlapSeconds(shiftStart, now, breakStart, breakEnd);
+  var breakElapsedSeconds = getScheduledBreakElapsedSeconds(now);
   var productiveSeconds = Math.max(rawElapsedSeconds - breakElapsedSeconds - getRecordedArretSeconds(), 0);
   var productiveMinutes = Math.min(Math.floor(productiveSeconds / 60), WORK_MINUTES);
   var remainingMinutes = Math.max(WORK_MINUTES - productiveMinutes, 0);
@@ -541,6 +644,9 @@ function addMachine() {
   }
   if (machines.length >= GOAL) { showToast('Objectif atteint !', true); return; }
   var now = new Date();
+  if (getActiveScheduledBreak(now)) {
+    showToast('Convoyeur en pause automatique', true); return;
+  }
   machines.push({ id: Date.now(), version: raw, time: formatTime(now), date: formatDate(now), note: '' });
   input.value = '';
   input.focus();
@@ -602,15 +708,8 @@ function toggleArret() {
   if (!arretActif) {
     arretActif = true;
     arretStart = new Date();
-    arretSecondes = 0;
-    document.getElementById('gyroBanner').classList.add('show');
-    document.getElementById('gyroBtn').classList.add('active');
-    document.getElementById('convoyeurStopOverlay').classList.add('show');
-    document.body.classList.add('arret-actif');
-    arretTimer = setInterval(function() {
-      arretSecondes++;
-      document.getElementById('gyroChrono').textContent = formatDuree(arretSecondes);
-    }, 1000);
+    applyArretState();
+    save();
     showToast('Convoyeur arrete !', true);
   } else {
     stopArret();
@@ -620,20 +719,15 @@ function toggleArret() {
 function stopArret() {
   if (!isOperatorMode) return;
   if (!arretActif) return;
+  syncArretSecondesFromStart();
   arretActif = false;
-  clearInterval(arretTimer);
-  arretTimer = null;
   var fin = new Date();
   historique.push({ debut: formatTime(arretStart), fin: formatTime(fin), date: formatDate(fin), duree_s: arretSecondes });
-  document.getElementById('gyroBanner').classList.remove('show');
-  document.getElementById('gyroBtn').classList.remove('active');
-  document.getElementById('convoyeurStopOverlay').classList.remove('show');
-  document.body.classList.remove('arret-actif');
-  document.getElementById('gyroChrono').textContent = '00:00';
+  arretStart = null;
+  applyArretState();
   save();
   showToast('Repris - ' + formatDuree(arretSecondes));
   arretSecondes = 0;
-  arretStart = null;
 }
 
 function openHistory() {
@@ -663,21 +757,17 @@ function resetAll() {
   if (!confirm('Reinitialiser la journee ? Tout sera efface.')) return;
   if (arretActif) {
     arretActif = false;
-    clearInterval(arretTimer);
-    arretTimer = null;
     arretSecondes = 0;
     arretStart = null;
-    document.getElementById('gyroBanner').classList.remove('show');
-    document.getElementById('gyroBtn').classList.remove('active');
-    document.getElementById('convoyeurStopOverlay').classList.remove('show');
-    document.body.classList.remove('arret-actif');
-    document.getElementById('gyroChrono').textContent = '00:00';
+    applyArretState();
   }
   machines = [];
   historique = [];
   localStorage.removeItem('yt_machines');
   localStorage.removeItem('yt_historique');
   localStorage.removeItem('yt_date');
+  localStorage.removeItem('yt_arret_actif');
+  localStorage.removeItem('yt_arret_start');
   updateUI();
   document.getElementById('goalBanner').classList.remove('show');
   showToast('Journee reinitialisee');
@@ -696,6 +786,8 @@ function save() {
   localStorage.setItem('yt_date', today);
   localStorage.setItem('yt_machines', JSON.stringify(machines));
   localStorage.setItem('yt_historique', JSON.stringify(historique));
+  localStorage.setItem('yt_arret_actif', arretActif ? '1' : '0');
+  localStorage.setItem('yt_arret_start', arretStart ? String(arretStart.getTime()) : '');
   saveToFirebase();
 }
 
@@ -710,6 +802,8 @@ function saveToFirebase() {
     window._fbSet(dayRef, {
       machines: machines,
       historique: historique,
+      arretActif: arretActif,
+      arretStart: arretStart ? arretStart.getTime() : null,
       count: machines.length,
       lastUpdate: Date.now(),
       _source: 'operateur'
@@ -725,10 +819,17 @@ function load() {
   if (savedDate === today) {
     try { machines = JSON.parse(localStorage.getItem('yt_machines') || '[]'); } catch(e) { machines = []; }
     try { historique = JSON.parse(localStorage.getItem('yt_historique') || '[]'); } catch(e) { historique = []; }
+    arretActif = localStorage.getItem('yt_arret_actif') === '1';
+    var savedArretStart = parseInt(localStorage.getItem('yt_arret_start') || '', 10);
+    arretStart = !Number.isNaN(savedArretStart) ? new Date(savedArretStart) : null;
   } else {
     machines = [];
     historique = [];
+    arretActif = false;
+    arretStart = null;
   }
+  if (!arretActif) arretStart = null;
+  applyArretState();
 }
 
 document.getElementById('addBtn').addEventListener('click', addMachine);
@@ -749,6 +850,12 @@ setInterval(updateDate, 60000);
 load();
 updateUI();
 setInterval(updateTimeProgress, 30000);
+document.addEventListener('visibilitychange', function() {
+  if (!document.hidden) {
+    updateArretDisplay();
+    updateTimeProgress();
+  }
+});
 </script>
 
 </body>
