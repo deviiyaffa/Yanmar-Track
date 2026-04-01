@@ -570,7 +570,9 @@ function updateTimeProgress() {
   var productiveMinutes = Math.min(Math.floor(productiveSeconds / 60), WORK_MINUTES);
   var remainingMinutes = Math.max(WORK_MINUTES - productiveMinutes, 0);
   var pct = Math.min((productiveMinutes / WORK_MINUTES) * 100, 100);
-  var expectedMachines = Math.min(Math.floor(productiveMinutes / 20), GOAL);
+  var expectedMachines = productiveMinutes >= WORK_MINUTES
+    ? GOAL
+    : Math.min(Math.floor(productiveMinutes / (WORK_MINUTES / GOAL)), GOAL);
   var deltaMachines = machines.length - expectedMachines;
 
   fill.style.width = pct + '%';
