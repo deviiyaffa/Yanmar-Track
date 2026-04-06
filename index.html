@@ -1012,7 +1012,13 @@ function setSchedulePreset(nextPreset) {
   schedulePreset = nextPreset;
   applySchedulePreset();
   updateUI();
+  notifyWidgetRefresh();
   showToast('Cadence ' + nextPreset.toUpperCase() + ' active');
+}
+
+function notifyWidgetRefresh() {
+  if (!window.webkit || !window.webkit.messageHandlers || !window.webkit.messageHandlers.widgetRefresh) return;
+  window.webkit.messageHandlers.widgetRefresh.postMessage('schedulePresetChanged');
 }
 
 document.getElementById('addBtn').addEventListener('click', addMachine);
